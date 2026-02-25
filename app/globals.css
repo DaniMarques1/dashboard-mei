@@ -1,26 +1,118 @@
 @import "tailwindcss";
 
+@theme {
+  --color-background: #0a0f18;
+  --color-foreground: #ffffff;
+  --color-card: #111827;
+  --color-sidebar: #0d121f;
+  --color-border: #1f2937;
+  --color-accent-blue: #3b82f6;
+  --color-accent-green: #10b981;
+  --color-accent-red: #ef4444;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0a0f18;
+  --foreground: #ffffff;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  overflow-x: hidden;
+}
+
+.tremor-card {
+  background-color: #111827 !important;
+  border-color: #1f2937 !important;
+}
+
+/* 
+  FIX AGRESSIVO PARA CORES DO TREMOR/RECHARTS NO TAILWIND 4
+  As classes dinâmicas do Tailwind 4 podem não ser geradas, 
+  então forçamos as cores principais via seletores de atributo SVG.
+*/
+
+/* 1. Cores das Barras e Fatias (Fills) */
+path[fill="blue"],
+.fill-blue-500 {
+  fill: #3b82f6 !important;
+}
+
+path[fill="emerald"],
+.fill-emerald-500 {
+  fill: #10b981 !important;
+}
+
+path[fill="violet"],
+.fill-violet-500 {
+  fill: #8b5cf6 !important;
+}
+
+path[fill="amber"],
+.fill-amber-500 {
+  fill: #f59e0b !important;
+}
+
+path[fill="rose"],
+.fill-rose-500 {
+  fill: #f43f5e !important;
+}
+
+/* 2. Cores das Linhas e Bordas (Strokes) */
+path[stroke="blue"],
+.stroke-blue-500 {
+  stroke: #3b82f6 !important;
+}
+
+path[stroke="emerald"],
+.stroke-emerald-500 {
+  stroke: #10b981 !important;
+}
+
+path[stroke="violet"],
+.stroke-violet-500 {
+  stroke: #8b5cf6 !important;
+}
+
+/* 3. FIX CRÍTICO: Textos (Eixos, Legendas, Labels) */
+/* Recharts usa elementos <text> e <tspan> que precisam de 'fill' em vez de 'color' */
+
+svg text,
+svg tspan,
+.recharts-text,
+.recharts-cartesian-axis-tick text,
+.recharts-legend-item-text,
+.recharts-label {
+  fill: #9ca3af !important;
+  /* text-gray-400 */
+}
+
+/* Texto no centro do Donut Chart e Títulos de Eixos */
+.recharts-text.recharts-label,
+.recharts-pie-label-text,
+.recharts-default-tooltip,
+.tremor-DonutChart text {
+  fill: #ffffff !important;
+}
+
+/* Tooltip do Gráfico (Fundo e Texto) */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: #111827 !important;
+  border: 1px solid #1f2937 !important;
+  color: #ffffff !important;
+}
+
+.recharts-tooltip-label,
+.recharts-tooltip-item-name,
+.recharts-tooltip-item-value {
+  color: #ffffff !important;
+}
+
+/* Garante que eixos fiquem visíveis */
+.recharts-cartesian-axis-line,
+.recharts-cartesian-axis-tick-line {
+  stroke: #374151 !important;
+  /* gray-700 */
 }
