@@ -5,31 +5,28 @@ import { MoreHorizontal } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import type { Transacao } from "@/lib/types";
 
-interface TransactionsTableProps {
-  transactions?: Transacao[];
-}
-
-const CATEGORIA_LABELS: Record<string, string> = {
-  consultoria: "Consultoria",
-  produtos_digitais: "Produtos Digitais",
-  workshops: "Workshops",
+const CAT_LABELS: Record<string, string> = {
+  materiais: "Materiais",
+  servicos: "Serviços",
+  software: "Software",
   outros: "Outros",
 };
 
-export function TransactionsTable({ transactions = [] }: TransactionsTableProps) {
-  const entradas = transactions
-    .filter((t) => t.tipo === "entrada" && t.status !== "cancelado")
+interface ExpensesTableProps {
+  transactions?: Transacao[];
+}
+
+export function ExpensesTable({ transactions = [] }: ExpensesTableProps) {
+  const expenses = transactions
+    .filter((t) => t.tipo === "saida" && t.status !== "cancelado")
     .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
     .slice(0, 10);
 
-  if (entradas.length === 0) {
+  if (expenses.length === 0) {
     return (
       <Card className="mt-8 bg-[#111827] border-gray-800">
-        <Title className="text-white mb-4">Transações Recentes</Title>
-        <EmptyState
-          title="Nenhuma transação de entrada"
-          description="Adicione transações usando o botão Nova transação."
-        />
+        <Title className="text-white mb-4">Últimos Gastos</Title>
+        <EmptyState title="Nenhum gasto" description="Adicione transações de saída para visualizar." />
       </Card>
     );
   }
@@ -37,9 +34,9 @@ export function TransactionsTable({ transactions = [] }: TransactionsTableProps)
   return (
     <Card className="mt-8 bg-[#111827] border-gray-800">
       <Flex alignItems="center" justifyContent="between" className="mb-4">
-        <Title className="text-white">Transações Recentes</Title>
+        <Title className="text-white">Últimos Gastos</Title>
         <button className="text-blue-500 text-sm font-medium hover:underline flex items-center gap-1">
-          Ver todas →
+          Ver todos →
         </button>
       </Flex>
       <div className="overflow-x-auto">
@@ -47,7 +44,7 @@ export function TransactionsTable({ transactions = [] }: TransactionsTableProps)
           <TableHead>
             <TableRow className="border-gray-800">
               <TableHeaderCell className="text-gray-400 font-medium">ID</TableHeaderCell>
-              <TableHeaderCell className="text-gray-400 font-medium">CLIENTE / SERVIÇO</TableHeaderCell>
+              <TableHeaderCell className="text-gray-400 font-medium">DESCRIÇÃO / CATEGORIA</TableHeaderCell>
               <TableHeaderCell className="text-gray-400 font-medium">DATA</TableHeaderCell>
               <TableHeaderCell className="text-gray-400 font-medium text-right">VALOR</TableHeaderCell>
               <TableHeaderCell className="text-gray-400 font-medium">STATUS</TableHeaderCell>
@@ -55,21 +52,21 @@ export function TransactionsTable({ transactions = [] }: TransactionsTableProps)
             </TableRow>
           </TableHead>
           <TableBody>
-            {entradas.map((item) => (
+            {expenses.map((item) => (
               <TableRow key={item.id} className="border-gray-800 hover:bg-white/5 transition-colors">
                 <TableCell className="text-gray-400 text-sm">{item.id}</TableCell>
                 <TableCell>
                   <div className="flex flex-col">
-                    <Text className="text-white font-medium">{item.contraparte || "-"}</Text>
-                    <Text className="text-gray-500 text-xs">{item.descricao}</Text>
+                    <Text className="text-white font-medium">{item.descricao}</Text>
+                    <Text className="text-gray-500 text-xs">{CAT_LABELS[item.categoria] ?? item.categoria}</Text>
                   </div>
                 </TableCell>
                 <TableCell className="text-gray-400 text-sm">
                   {new Date(item.data).toLocaleDateString("pt-BR")}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Text className="text-white font-medium">
-                    R$ {item.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  <Text className="text-rose-400 font-medium">
+                    -R$ {item.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </Text>
                 </TableCell>
                 <TableCell>
